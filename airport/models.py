@@ -64,7 +64,7 @@ class Country(models.Model):
 class City(models.Model):
     name = models.CharField(max_length=50)
     country = models.ForeignKey(
-        Country, on_delete=models.CASCADE, related_name="cities"
+        Country, on_delete=models.PROTECT, related_name="cities"
     )
 
     class Meta:
