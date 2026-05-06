@@ -48,7 +48,7 @@ class Order(models.Model):
         ordering = ["-created_at"]
 
     def __str__(self):
-        return f"{self.user.username} at {self.created_at:%Y-%m-%d}"
+        return f"{self.user.email} at {self.created_at:%Y-%m-%d}"
 
 
 class Country(models.Model):
@@ -147,6 +147,17 @@ class Flight(models.Model):
             f"{self.arrival_time.strftime('%Y-%m-%d %H:%M')}"
         )
 
+    def clean(self):
+        if self.departure_time and self.arrival_time:
+            if self.arrival_time <= self.departure_time:
+                raise ValidationError(
+                    {"arrival_time": "Arrival time must be later than departure time."}
+                )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        return super().save(*args, **kwargs)
+
 
 class Ticket(models.Model):
     row = models.IntegerField(validators=[MinValueValidator(1)])
@@ -166,18 +177,19 @@ class Ticket(models.Model):
         return f"Row: {self.row}, seat: {self.seat} | {self.flight}"
 
     def clean(self):
-        if hasattr(self, "flight") and self.flight.airplane:
-            airplane = self.flight.airplane
-            if self.row and self.row > airplane.rows:
-                raise ValidationError(
-                    {"row": f"Row number must be in range [1, {airplane.rows}]"}
-                )
-            if self.seat and self.seat > airplane.seats_in_row:
-                raise ValidationError(
-                    {
-                        "seat": f"Seat number must be in range [1, {airplane.seats_in_row}]"
-                    }
-                )
+        if not (hasattr(self.flight) and getattr(self.flight, "airplane", None)):
+            return
+
+        airplane = self.flight.airplane
+        errors = {}
+
+        if self.row and not (1 <= self.row <= airplane.rows):
+            errors["row"] = f"Row must be in range [1-{airplane.rows}]"
+        if self.seat and not (1 <= self.seat <= airplane.seats_in_row):
+            errors["seat"] = f"Seat must be in rane [1-{airplane.seats_in_row}]"
+
+        if errors:
+            raise ValidationError(errors)
 
     def save(self, *args, **kwargs):
         self.full_clean()
