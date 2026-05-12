@@ -73,7 +73,7 @@ class City(models.Model):
         verbose_name_plural = "Cities"
 
     def __str__(self):
-        return self.name
+        return f"{self.name}, {self.country}"
 
 
 class Airport(models.Model):
@@ -177,7 +177,7 @@ class Ticket(models.Model):
         return f"Row: {self.row}, seat: {self.seat} | {self.flight}"
 
     def clean(self):
-        if not (hasattr(self.flight) and getattr(self.flight, "airplane", None)):
+        if not self.flight or not hasattr(self.flight, "airplane"):
             return
 
         airplane = self.flight.airplane
@@ -186,7 +186,7 @@ class Ticket(models.Model):
         if self.row and not (1 <= self.row <= airplane.rows):
             errors["row"] = f"Row must be in range [1-{airplane.rows}]"
         if self.seat and not (1 <= self.seat <= airplane.seats_in_row):
-            errors["seat"] = f"Seat must be in rane [1-{airplane.seats_in_row}]"
+            errors["seat"] = f"Seat must be in range [1-{airplane.seats_in_row}]"
 
         if errors:
             raise ValidationError(errors)
