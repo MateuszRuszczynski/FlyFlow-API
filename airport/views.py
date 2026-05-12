@@ -85,7 +85,7 @@ class AirplaneViewSet(viewsets.ModelViewSet):
             return serializers.AirplaneListSerializer
         return serializers.AirplaneSerializer
 
-    @action(method=["POST"], detail=True, url_path="upload-image")
+    @action(methods=["POST"], detail=True, url_path="upload-image")
     def upload_image(self, request, pk=None):
         airplane = self.get_object()
         serializer = serializers.AirplaneImageSerializer(airplane, data=request.data)
