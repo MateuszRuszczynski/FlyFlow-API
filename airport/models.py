@@ -3,12 +3,7 @@ from django.conf import settings
 from django.db.models import UniqueConstraint, CheckConstraint, Q, F
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
-
-
-def validate_image_size(file):
-    max_size = 2 * 1024 * 1024
-    if file.size > max_size:
-        raise ValidationError("Image file too large. Size should not exceed 2MB")
+import os, uuid
 
 
 class AirplaneType(models.Model):
@@ -21,6 +16,18 @@ class AirplaneType(models.Model):
         return self.name
 
 
+def validate_image_size(file):
+    max_size = 2 * 1024 * 1024
+    if file.size > max_size:
+        raise ValidationError("Image file too large. Size should not exceed 2MB")
+
+
+def airplane_image_file_path(instance, filename):
+    extension = os.path.splitext(filename)[1]
+    filename = f"{uuid.uuid4()}{extension}"
+    return os.path.join("upload/airplanes/", filename)
+
+
 class Airplane(models.Model):
     name = models.CharField(max_length=50)
     rows = models.IntegerField(validators=[MinValueValidator(1)])
@@ -29,7 +36,7 @@ class Airplane(models.Model):
         AirplaneType, on_delete=models.PROTECT, related_name="airplanes"
     )
     image = models.ImageField(
-        null=True, upload_to="airplanes/", validators=[validate_image_size]
+        null=True, upload_to=airplane_image_file_path, validators=[validate_image_size]
     )
 
     class Meta:
