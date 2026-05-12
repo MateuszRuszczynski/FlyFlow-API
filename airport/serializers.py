@@ -42,10 +42,10 @@ class CitySerializer(serializers.ModelSerializer):
 
 
 class AirportSerializer(serializers.ModelSerializer):
-    city = CitySerializer(read_only=True)
     city_id = serializers.PrimaryKeyRelatedField(
         queryset=models.City.objects.all(), source="city", write_only=True
     )
+    city = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = models.Airport
@@ -58,12 +58,20 @@ class RouteSerializer(serializers.ModelSerializer):
         fields = ("id", "source", "destination", "distance")
 
 
+class RouteListSerializer(RouteSerializer):
+    source = serializers.SlugRelatedField(slug_field="name", read_only=True)
+    destination = serializers.SlugRelatedField(slug_field="name", read_only=True)
+
+    class Meta(RouteSerializer.Meta):
+        fields = RouteSerializer.Meta.fields
+
+
 class RouteDetailSerializer(RouteSerializer):
     source = AirportSerializer(read_only=True)
     destination = AirportSerializer(read_only=True)
 
     class Meta(RouteSerializer.Meta):
-        pass
+        fields = RouteSerializer.Meta.fields
 
 
 class CrewSerializer(serializers.ModelSerializer):
@@ -72,33 +80,15 @@ class CrewSerializer(serializers.ModelSerializer):
         fields = ("id", "first_name", "last_name")
 
 
-class TicketSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = models.Ticket
-        fields = ("id", "row", "seat", "flight")
-
-    def validate(self, attrs):
-        instance = models.Ticket(**attrs)
-        try:
-            instance.full_clean(validate_unique=False)
-        except DjangoValidationError as e:
-            raise serializers.ValidationError(e.message_dict)
-        return attrs
-
-
-class TicketListSerializer(TicketSerializer):
-    flight = serializers.SlugRelatedField(slug_field="route", read_only=True)
-
-
 class FlightSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Flight
         fields = ("id", "route", "airplane", "departure_time", "arrival_time", "crew")
 
     def validate(self, attrs):
-        if self.isinstance:
+        if self.instance:
             instance = self.Meta.model(**self.instance.__dict__)
-            for attr, value in attrs.item():
+            for attr, value in attrs.items():
                 setattr(instance, attr, value)
         else:
             instance = models.Flight(**attrs)
@@ -110,7 +100,7 @@ class FlightSerializer(serializers.ModelSerializer):
 
 
 class FlightListSerializer(serializers.ModelSerializer):
-    route = serializers.StringRelatedField()
+    route = serializers.StringRelatedField(read_only=True)
     airplane_name = serializers.CharField(source="airplane.name", read_only=True)
     airplane_capacity = serializers.IntegerField(
         source="airplane.total_places", read_only=True
@@ -130,11 +120,21 @@ class FlightListSerializer(serializers.ModelSerializer):
         )
 
 
+class TicketTakenSeatsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Ticket
+        fields = ("seat", "row")
+
+
 class FlightDetailSerializer(serializers.ModelSerializer):
     route = RouteDetailSerializer(read_only=True)
     airplane = AirplaneListSerializer(read_only=True)
     crew = CrewSerializer(read_only=True, many=True)
-    taken_places = TicketSerializer(source="tickets", many=True, read_only=True)
+    taken_seats = TicketTakenSeatsSerializer(
+        read_only=True,
+        many=True,
+        source="tickets"
+    )
 
     class Meta:
         model = models.Flight
@@ -145,8 +145,29 @@ class FlightDetailSerializer(serializers.ModelSerializer):
             "departure_time",
             "arrival_time",
             "crew",
-            "taken_places",
+            "taken_seats",
         )
+
+
+class TicketSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Ticket
+        fields = ("id", "row", "seat", "flight")
+
+    def validate(self, attrs):
+        instance = models.Ticket(**attrs)
+        try:
+            instance.full_clean(exclude=["order"], validate_unique=False)
+        except DjangoValidationError as e:
+            raise serializers.ValidationError(e.message_dict)
+        return attrs
+
+
+class TicketListSerializer(TicketSerializer):
+    flight = FlightSerializer(many=False, read_only=True)
+
+    class Meta(TicketSerializer.Meta):
+        fields = TicketSerializer.Meta.fields
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -164,3 +185,12 @@ class OrderSerializer(serializers.ModelSerializer):
             for ticket_data in tickets_data:
                 models.Ticket.objects.create(order=order, **ticket_data)
         return order
+
+
+class OrderListSerializer(OrderSerializer):
+    tickets = TicketListSerializer(many=True, read_only=True)
+    user = serializers.SlugRelatedField(slug_field="email", read_only=True)
+
+    class Meta(OrderSerializer.Meta):
+        fields = OrderSerializer.Meta.fields + ("user",)
+
