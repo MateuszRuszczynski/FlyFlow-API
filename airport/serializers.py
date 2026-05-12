@@ -24,6 +24,11 @@ class AirplaneListSerializer(AirplaneSerializer):
         fields = AirplaneSerializer.Meta.fields + ("total_places",)
 
 
+class AirplaneImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        fields = ("id", "image")
+
+
 class CountrySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Country
