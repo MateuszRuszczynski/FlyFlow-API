@@ -5,6 +5,12 @@ from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
 
 
+def validate_image_size(file):
+    max_size = 2 * 1024 * 1024
+    if file.size > max_size:
+        raise ValidationError("Image file too large. Size should not exceed 2MB")
+
+
 class AirplaneType(models.Model):
     name = models.CharField(max_length=50)
 
@@ -21,6 +27,9 @@ class Airplane(models.Model):
     seats_in_row = models.IntegerField(validators=[MinValueValidator(1)])
     airplane_type = models.ForeignKey(
         AirplaneType, on_delete=models.PROTECT, related_name="airplanes"
+    )
+    image = models.ImageField(
+        null=True, upload_to="airplanes/", validators=[validate_image_size]
     )
 
     class Meta:
@@ -130,6 +139,7 @@ class Flight(models.Model):
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
     crew = models.ManyToManyField(Crew, related_name="flights")
+    image = models.ImageField(null=True, upload_to="airplanes/")
 
     class Meta:
         ordering = ["departure_time"]
