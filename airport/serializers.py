@@ -26,6 +26,7 @@ class AirplaneListSerializer(AirplaneSerializer):
 
 class AirplaneImageSerializer(serializers.ModelSerializer):
     class Meta:
+        model = models.Airplane
         fields = ("id", "image")
 
 
