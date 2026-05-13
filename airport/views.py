@@ -51,7 +51,7 @@ class OrderViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet
     ):
-    # permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return models.Order.objects.filter(
@@ -69,11 +69,11 @@ class OrderViewSet(
 class AirplaneTypeViewSet(viewsets.ModelViewSet):
     queryset = models.AirplaneType.objects.all()
     serializer_class = serializers.AirplaneTypeSerializer
-    # permission_classes = [custom_permissions.IsAdminOrReadOnly]
+    permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
 
 class AirplaneViewSet(viewsets.ModelViewSet):
-    # permission_classes = [custom_permissions.IsAdminOrReadOnly]
+    permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
     def get_queryset(self):
         return models.Airplane.objects.all().select_related(
@@ -83,6 +83,8 @@ class AirplaneViewSet(viewsets.ModelViewSet):
     def get_serializer_class(self):
         if self.action == "list":
             return serializers.AirplaneListSerializer
+        if self.action == "upload-image":
+            return serializers.AirplaneImageSerializer
         return serializers.AirplaneSerializer
 
     @action(methods=["POST"], detail=True, url_path="upload-image")
@@ -104,7 +106,7 @@ class CountryViewSet(
     ):
     queryset = models.Country.objects.all()
     serializer_class = serializers.CountrySerializer
-    # permission_classes = [custom_permissions.IsAdminOrReadOnly]
+    permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
 
 class CityViewSet(
@@ -114,7 +116,7 @@ class CityViewSet(
     viewsets.GenericViewSet
     ):
     serializer_class = serializers.CitySerializer
-    # permission_classes = [custom_permissions.IsAdminOrReadOnly]
+    permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
     def get_queryset(self):
         return models.City.objects.all().select_related(
@@ -124,7 +126,7 @@ class CityViewSet(
 
 class AirportViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.AirportSerializer
-    # permission_classes = [custom_permissions.IsAdminOrReadOnly]
+    permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
     def get_queryset(self):
         return models.Airport.objects.all().select_related(
@@ -133,7 +135,7 @@ class AirportViewSet(viewsets.ModelViewSet):
 
 
 class RouteViewSet(viewsets.ModelViewSet):
-    # permission_classes = [custom_permissions.IsAdminOrReadOnly]
+    permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -152,4 +154,4 @@ class RouteViewSet(viewsets.ModelViewSet):
 class CrewViewSet(viewsets.ModelViewSet):
     queryset = models.Crew.objects.all()
     serializer_class = serializers.CrewSerializer
-    # permission_classes = [permissions.IsAdminUser]
+    permission_classes = [permissions.IsAdminUser]
