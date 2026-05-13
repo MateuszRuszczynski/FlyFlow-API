@@ -3,11 +3,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import F, Count, Q
-from . import(
+from . import (
     models,
     serializers,
     filters as custom_filters,
-    permissions as custom_permissions
+    permissions as custom_permissions,
 )
 
 
@@ -24,15 +24,14 @@ class FlightViewSet(viewsets.ModelViewSet):
     ordering_fields = ["departure_time", "arrival_time"]
 
     def get_queryset(self):
-        queryset = models.Flight.objects.all().prefetch_related(
-            "crew", "tickets"
-        ).select_related(
-            "route__destination",
-            "route__source",
-            "airplane"
-        ).annotate(
-            tickets_available=(
-                F("airplane__rows") * F("airplane__seats_in_row") - Count("tickets")
+        queryset = (
+            models.Flight.objects.all()
+            .prefetch_related("crew", "tickets")
+            .select_related("route__destination", "route__source", "airplane")
+            .annotate(
+                tickets_available=(
+                    F("airplane__rows") * F("airplane__seats_in_row") - Count("tickets")
+                )
             )
         )
         return queryset
@@ -49,15 +48,15 @@ class OrderViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
     mixins.ListModelMixin,
-    viewsets.GenericViewSet
-    ):
+    viewsets.GenericViewSet,
+):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return models.Order.objects.filter(
-            user=self.request.user
-        ).prefetch_related("tickets").select_related(
-            "user"
+        return (
+            models.Order.objects.filter(user=self.request.user)
+            .prefetch_related("tickets")
+            .select_related("user")
         )
 
     def get_serializer_class(self):
@@ -76,9 +75,7 @@ class AirplaneViewSet(viewsets.ModelViewSet):
     permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
     def get_queryset(self):
-        return models.Airplane.objects.all().select_related(
-            "airplane_type"
-        )
+        return models.Airplane.objects.all().select_related("airplane_type")
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -102,8 +99,8 @@ class CountryViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet
-    ):
+    viewsets.GenericViewSet,
+):
     queryset = models.Country.objects.all()
     serializer_class = serializers.CountrySerializer
     permission_classes = [custom_permissions.IsAdminOrReadOnly]
@@ -113,15 +110,13 @@ class CityViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet
-    ):
+    viewsets.GenericViewSet,
+):
     serializer_class = serializers.CitySerializer
     permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
     def get_queryset(self):
-        return models.City.objects.all().select_related(
-            "country"
-        )
+        return models.City.objects.all().select_related("country")
 
 
 class AirportViewSet(viewsets.ModelViewSet):
@@ -129,9 +124,7 @@ class AirportViewSet(viewsets.ModelViewSet):
     permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
     def get_queryset(self):
-        return models.Airport.objects.all().select_related(
-            "city"
-        )
+        return models.Airport.objects.all().select_related("city")
 
 
 class RouteViewSet(viewsets.ModelViewSet):
@@ -145,10 +138,7 @@ class RouteViewSet(viewsets.ModelViewSet):
         return serializers.RouteSerializer
 
     def get_queryset(self):
-        return models.Route.objects.all().select_related(
-            "source",
-            "destination"
-        )
+        return models.Route.objects.all().select_related("source", "destination")
 
 
 class CrewViewSet(viewsets.ModelViewSet):
