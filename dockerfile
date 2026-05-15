@@ -16,7 +16,7 @@ COPY . .
 
 RUN useradd -m myuser
 
-RUN mkdir -p /vol/web/media /vol/web/static && \
+RUN mkdir -p /vol/web/media && \
     chown -R myuser:myuser /vol/web
 
 USER myuser
