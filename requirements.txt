@@ -19,3 +19,6 @@ pillow>=12.2.0
 
 #PostgreSQL
 psycopg2-binary>=2.9.9
+
+#Load .env
+python-dotenv>=1.2.2
