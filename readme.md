@@ -39,7 +39,7 @@ Ensure you have [Docker](https://www.docker.com/) installed on your local machin
 ### 2️⃣ Installation
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/flyflow_api.git
+git clone https://github.com/MateuszRuszczynski/FlyFlow-API.git
 cd flyflow_api
 
 # Prepare environment variables
