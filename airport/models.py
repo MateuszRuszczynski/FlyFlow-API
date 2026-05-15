@@ -3,7 +3,8 @@ from django.conf import settings
 from django.db.models import UniqueConstraint, CheckConstraint, Q, F
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator
-import os, uuid
+import os
+import uuid
 
 
 class AirplaneType(models.Model):

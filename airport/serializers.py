@@ -137,9 +137,7 @@ class FlightDetailSerializer(serializers.ModelSerializer):
     airplane = AirplaneListSerializer(read_only=True)
     crew = CrewSerializer(read_only=True, many=True)
     taken_seats = TicketTakenSeatsSerializer(
-        read_only=True,
-        many=True,
-        source="tickets"
+        read_only=True, many=True, source="tickets"
     )
 
     class Meta:
@@ -199,4 +197,3 @@ class OrderListSerializer(OrderSerializer):
 
     class Meta(OrderSerializer.Meta):
         fields = OrderSerializer.Meta.fields + ("user",)
-

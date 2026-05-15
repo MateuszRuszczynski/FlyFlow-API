@@ -13,7 +13,6 @@ from airport.models import (
     City,
     Airport,
     Route,
-    Crew,
     Flight,
     Ticket,
 )
@@ -71,7 +70,7 @@ class AirlineModelsTest(TestCase):
             airplane=self.airplane,
             departure_time=now,
             arrival_time=now + timedelta(hours=1),
-            image=get_test_image()
+            image=get_test_image(),
         )
         order = Order.objects.create(user=self.user)
         ticket = Ticket(row=25, seat=1, flight=flight, order=order)

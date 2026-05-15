@@ -15,6 +15,4 @@ router.register("routes", views.RouteViewSet, basename="route")
 router.register("crew", views.CrewViewSet, basename="crew")
 router.register("flights", views.FlightViewSet, basename="flight")
 
-urlpatterns = [
-    path("", include(router.urls))
-]
+urlpatterns = [path("", include(router.urls))]

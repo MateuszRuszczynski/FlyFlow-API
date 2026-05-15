@@ -5,7 +5,6 @@ from django.test import TestCase
 from django.utils import timezone
 import io
 from PIL import Image
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 from airport import serializers
 from airport.models import (
@@ -35,7 +34,6 @@ def sample_image():
 
 
 class SerializerTestMixin(TestCase):
-
     def setUp(self):
         self.user = User.objects.create_user(
             email="user@test.com", password="password123"
@@ -97,7 +95,6 @@ class SerializerTestMixin(TestCase):
 
 
 class AirplaneTypeSerializerTest(SerializerTestMixin):
-
     def test_serializer(self):
         serializer = serializers.AirplaneTypeSerializer(self.airplane_type)
 
@@ -111,7 +108,6 @@ class AirplaneTypeSerializerTest(SerializerTestMixin):
 
 
 class AirplaneSerializerTest(SerializerTestMixin):
-
     def test_airplane_serializer(self):
         serializer = serializers.AirplaneSerializer(self.airplane)
 
@@ -126,7 +122,6 @@ class AirplaneSerializerTest(SerializerTestMixin):
 
 
 class CountrySerializerTest(SerializerTestMixin):
-
     def test_country_serializer(self):
         serializer = serializers.CountrySerializer(self.country)
 
@@ -134,7 +129,6 @@ class CountrySerializerTest(SerializerTestMixin):
 
 
 class CitySerializerTest(SerializerTestMixin):
-
     def test_city_serializer(self):
         serializer = serializers.CitySerializer(self.city1)
 
@@ -144,7 +138,6 @@ class CitySerializerTest(SerializerTestMixin):
 
 
 class AirportSerializerTest(SerializerTestMixin):
-
     def test_airport_serializer(self):
         serializer = serializers.AirportSerializer(self.airport1)
 
@@ -154,7 +147,6 @@ class AirportSerializerTest(SerializerTestMixin):
 
 
 class RouteSerializerTest(SerializerTestMixin):
-
     def test_route_serializer(self):
         serializer = serializers.RouteSerializer(self.route)
 
@@ -176,7 +168,6 @@ class RouteSerializerTest(SerializerTestMixin):
 
 
 class CrewSerializerTest(SerializerTestMixin):
-
     def test_crew_serializer(self):
         serializer = serializers.CrewSerializer(self.crew)
 
@@ -184,7 +175,6 @@ class CrewSerializerTest(SerializerTestMixin):
 
 
 class FlightSerializerTest(SerializerTestMixin):
-
     def test_flight_serializer(self):
         serializer = serializers.FlightSerializer(self.flight)
 
@@ -221,7 +211,6 @@ class FlightSerializerTest(SerializerTestMixin):
 
 
 class TicketSerializerTest(SerializerTestMixin):
-
     def test_ticket_serializer(self):
         serializer = serializers.TicketSerializer(self.ticket)
 
@@ -253,7 +242,6 @@ class TicketSerializerTest(SerializerTestMixin):
 
 
 class OrderSerializerTest(SerializerTestMixin):
-
     def test_order_serializer(self):
         serializer = serializers.OrderSerializer(self.order)
 

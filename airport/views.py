@@ -2,7 +2,7 @@ from rest_framework import viewsets, mixins, permissions, filters, status
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.db.models import F, Count, Q
+from django.db.models import F, Count
 from . import (
     models,
     serializers,

@@ -8,7 +8,6 @@ from rest_framework import status
 from rest_framework.test import APIClient
 import io
 from PIL import Image
-from django.core.files.uploadedfile import SimpleUploadedFile
 from airport.models import (
     AirplaneType,
     Airplane,
@@ -35,7 +34,6 @@ def sample_image():
 
 
 class BaseApiTest(TestCase):
-
     def setUp(self):
         self.client = APIClient()
 
@@ -88,7 +86,6 @@ class BaseApiTest(TestCase):
 
 
 class AirplaneTypeViewSetTest(BaseApiTest):
-
     def test_list_airplane_types(self):
         url = reverse("airport:airplane_type-list")
 
@@ -107,7 +104,6 @@ class AirplaneTypeViewSetTest(BaseApiTest):
 
 
 class AirplaneViewSetTest(BaseApiTest):
-
     def test_list_airplanes(self):
         url = reverse("airport:airplane-list")
 
@@ -140,7 +136,6 @@ class AirplaneViewSetTest(BaseApiTest):
 
 
 class CountryViewSetTest(BaseApiTest):
-
     def test_list_countries(self):
         url = reverse("airport:country-list")
 
@@ -159,7 +154,6 @@ class CountryViewSetTest(BaseApiTest):
 
 
 class CityViewSetTest(BaseApiTest):
-
     def test_list_cities(self):
         url = reverse("airport:city-list")
 
@@ -181,7 +175,6 @@ class CityViewSetTest(BaseApiTest):
 
 
 class AirportViewSetTest(BaseApiTest):
-
     def test_list_airports(self):
         url = reverse("airport:airport-list")
 
@@ -204,7 +197,6 @@ class AirportViewSetTest(BaseApiTest):
 
 
 class RouteViewSetTest(BaseApiTest):
-
     def test_list_routes(self):
         url = reverse("airport:route-list")
 
@@ -240,7 +232,6 @@ class RouteViewSetTest(BaseApiTest):
 
 
 class CrewViewSetTest(BaseApiTest):
-
     def test_list_crew(self):
         Crew.objects.create(first_name="John", last_name="Doe")
 
@@ -264,7 +255,6 @@ class CrewViewSetTest(BaseApiTest):
 
 
 class FlightViewSetTest(BaseApiTest):
-
     def test_list_flights(self):
         url = reverse("airport:flight-list")
 
@@ -281,7 +271,6 @@ class FlightViewSetTest(BaseApiTest):
 
 
 class OrderViewSetTest(BaseApiTest):
-
     def test_list_orders(self):
         Order.objects.create(user=self.user)
 

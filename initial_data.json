@@ -3,14 +3,28 @@
     "model": "airport.country",
     "pk": 1,
     "fields": {
-      "name": "United States"
+      "name": "Poland"
+    }
+  },
+  {
+    "model": "airport.country",
+    "pk": 2,
+    "fields": {
+      "name": "Germany"
+    }
+  },
+  {
+    "model": "airport.country",
+    "pk": 3,
+    "fields": {
+      "name": "France"
     }
   },
   {
     "model": "airport.city",
     "pk": 1,
     "fields": {
-      "name": "New York",
+      "name": "Warsaw",
       "country": 1
     }
   },
@@ -18,16 +32,24 @@
     "model": "airport.city",
     "pk": 2,
     "fields": {
-      "name": "Los Angeles",
-      "country": 1
+      "name": "Berlin",
+      "country": 2
+    }
+  },
+  {
+    "model": "airport.city",
+    "pk": 3,
+    "fields": {
+      "name": "Paris",
+      "country": 3
     }
   },
   {
     "model": "airport.airport",
     "pk": 1,
     "fields": {
-      "name": "John F. Kennedy International",
-      "closest_big_city": "New York City",
+      "name": "Chopin Airport",
+      "closest_big_city": "Warsaw",
       "city": 1
     }
   },
@@ -35,9 +57,76 @@
     "model": "airport.airport",
     "pk": 2,
     "fields": {
-      "name": "Los Angeles International",
-      "closest_big_city": "Los Angeles",
+      "name": "Brandenburg Airport",
+      "closest_big_city": "Berlin",
       "city": 2
+    }
+  },
+  {
+    "model": "airport.airport",
+    "pk": 3,
+    "fields": {
+      "name": "Charles de Gaulle",
+      "closest_big_city": "Paris",
+      "city": 3
+    }
+  },
+  {
+    "model": "airport.airplanetype",
+    "pk": 1,
+    "fields": {
+      "name": "Boeing 737"
+    }
+  },
+  {
+    "model": "airport.airplanetype",
+    "pk": 2,
+    "fields": {
+      "name": "Airbus A320"
+    }
+  },
+  {
+    "model": "airport.airplane",
+    "pk": 1,
+    "fields": {
+      "name": "LOT-001",
+      "rows": 30,
+      "seats_in_row": 6,
+      "airplane_type": 1
+    }
+  },
+  {
+    "model": "airport.airplane",
+    "pk": 2,
+    "fields": {
+      "name": "LHA-002",
+      "rows": 25,
+      "seats_in_row": 4,
+      "airplane_type": 2
+    }
+  },
+  {
+    "model": "airport.crew",
+    "pk": 1,
+    "fields": {
+      "first_name": "Jan",
+      "last_name": "Kowalski"
+    }
+  },
+  {
+    "model": "airport.crew",
+    "pk": 2,
+    "fields": {
+      "first_name": "Anna",
+      "last_name": "Nowak"
+    }
+  },
+  {
+    "model": "airport.crew",
+    "pk": 3,
+    "fields": {
+      "first_name": "Hans",
+      "last_name": "Schmidt"
     }
   },
   {
@@ -46,40 +135,16 @@
     "fields": {
       "source": 1,
       "destination": 2,
-      "distance": 3980
+      "distance": 520
     }
   },
   {
-    "model": "airport.airplanetype",
-    "pk": 1,
-    "fields": {
-      "name": "Boeing 747"
-    }
-  },
-  {
-    "model": "airport.airplane",
-    "pk": 1,
-    "fields": {
-      "name": "N12345",
-      "rows": 20,
-      "seats_in_row": 6,
-      "airplane_type": 1
-    }
-  },
-  {
-    "model": "airport.crew",
-    "pk": 1,
-    "fields": {
-      "first_name": "John",
-      "last_name": "Doe"
-    }
-  },
-  {
-    "model": "airport.crew",
+    "model": "airport.route",
     "pk": 2,
     "fields": {
-      "first_name": "Jane",
-      "last_name": "Smith"
+      "source": 2,
+      "destination": 3,
+      "distance": 880
     }
   },
   {
@@ -88,37 +153,20 @@
     "fields": {
       "route": 1,
       "airplane": 1,
-      "departure_time": "2024-12-01T10:00:00Z",
-      "arrival_time": "2024-12-01T16:00:00Z",
+      "departure_time": "2026-06-01T10:00:00Z",
+      "arrival_time": "2026-06-01T11:30:00Z",
       "crew": [1, 2]
     }
   },
   {
-    "model": "airport.order",
-    "pk": 1,
-    "fields": {
-      "created_at": "2024-11-20T12:00:00Z",
-      "user": 1
-    }
-  },
-  {
-    "model": "airport.ticket",
-    "pk": 1,
-    "fields": {
-      "row": 1,
-      "seat": 1,
-      "flight": 1,
-      "order": 1
-    }
-  },
-  {
-    "model": "airport.ticket",
+    "model": "airport.flight",
     "pk": 2,
     "fields": {
-      "row": 1,
-      "seat": 2,
-      "flight": 1,
-      "order": 1
+      "route": 2,
+      "airplane": 2,
+      "departure_time": "2026-06-02T14:00:00Z",
+      "arrival_time": "2026-06-02T16:00:00Z",
+      "crew": [2, 3]
     }
   }
 ]
