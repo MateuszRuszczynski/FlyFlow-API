@@ -43,17 +43,19 @@ git clone https://github.com/MateuszRuszczynski/FlyFlow-API.git
 cd flyflow_api
 
 # Prepare environment variables
-cp .env.sample .env
+cp .env_sample .env
 ```
 ### 3️⃣ Build & Run
 ```bash
+#Build docker container
 docker-compose up --build
+
+#Sample data
+docker compose exec web python manage.py loaddata initial_data.json
 ```
 The API will be run at http://localhost:8000
 
 ---
-
-## ## 🛠 Tech Stack
 
 ## 📂 Project Architecture
 
