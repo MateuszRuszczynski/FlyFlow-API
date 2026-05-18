@@ -66,5 +66,5 @@ The API will be run at http://localhost:8000
 | **`flyflow_api/`** | The project's "brain" — contains global settings and root URL configuration. |
 | **`requirements.txt`** | List of all Python dependencies required to run the project. |
 | **`Dockerfile`** | Instructions for building the Django web container image. |
-| **`docker-compose.yml`** | Orchestration file that links the Web and Database services together. |
+| **`docker-compose.yml`** | File that links the Web and Database services together. |
 | **`.env.sample`** | A template for environment variables to help others set up the project securely. |
