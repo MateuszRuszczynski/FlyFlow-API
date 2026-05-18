@@ -8,5 +8,17 @@ djangorestframework-simplejwt>=5.5.1
 # Documentation & Schema
 drf-spectacular>=0.29.0
 
+#Filtering
+django-filter>=25.2
+
 # Development Tools
 ruff>=0.15.12
+
+#Image processing
+pillow>=12.2.0
+
+#PostgreSQL
+psycopg2-binary>=2.9.9
+
+#Load .env
+python-dotenv>=1.2.2
