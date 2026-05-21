@@ -47,13 +47,13 @@ cp .env_sample .env
 ```
 ### 3️⃣ Build & Run
 ```bash
-#Build docker container
+# Build docker container
 docker-compose up --build
 
-#Populate the datebase with sample data
+# Populate the datebase with sample data
 docker compose exec web python manage.py loaddata initial_data.json
 
-#Create an administrator account to access locked endpoints
+# Create an administrator account to access locked endpoints
 docker compose exec web python manage.py createsuperuser
 ```
 The API will be run at http://localhost:8000
