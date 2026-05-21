@@ -147,7 +147,6 @@ class Flight(models.Model):
     departure_time = models.DateTimeField()
     arrival_time = models.DateTimeField()
     crew = models.ManyToManyField(Crew, related_name="flights")
-    image = models.ImageField(null=True, upload_to="airplanes/")
 
     class Meta:
         ordering = ["departure_time"]
