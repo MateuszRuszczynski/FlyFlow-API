@@ -12,7 +12,7 @@ from . import (
 
 
 class FlightViewSet(viewsets.ModelViewSet):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
     filter_backends = [
         DjangoFilterBackend,
