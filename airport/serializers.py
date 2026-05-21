@@ -97,12 +97,31 @@ class FlightSerializer(serializers.ModelSerializer):
             for attr, value in attrs.items():
                 setattr(instance, attr, value)
         else:
-            instance = models.Flight(**attrs)
+            attrs_copy = attrs.copy()
+            attrs_copy.pop("crew", [])
+
+            instance = models.Flight(**attrs_copy)
             try:
                 instance.full_clean(validate_unique=False)
             except DjangoValidationError as e:
                 raise serializers.ValidationError(e.message_dict)
         return attrs
+
+    def create(self, validated_data):
+        crew_data = validated_data.pop("crew", [])
+        flight = models.Flight.objects.create(**validated_data)
+        flight.crew.set(crew_data)
+
+        return flight
+
+    def update(self, instance, validated_data):
+        crew_data = validated_data.pop("crew", None)
+        instance = super().update(instance, validated_data)
+
+        if crew_data is not None:
+            instance.crew.set(crew_data)
+
+        return instance
 
 
 class FlightListSerializer(serializers.ModelSerializer):
@@ -135,7 +154,6 @@ class TicketTakenSeatsSerializer(serializers.ModelSerializer):
 class FlightDetailSerializer(serializers.ModelSerializer):
     route = RouteDetailSerializer(read_only=True)
     airplane = AirplaneListSerializer(read_only=True)
-    crew = CrewSerializer(read_only=True, many=True)
     taken_seats = TicketTakenSeatsSerializer(
         read_only=True, many=True, source="tickets"
     )
@@ -148,7 +166,6 @@ class FlightDetailSerializer(serializers.ModelSerializer):
             "airplane",
             "departure_time",
             "arrival_time",
-            "crew",
             "taken_seats",
         )
 
