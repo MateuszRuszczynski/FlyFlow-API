@@ -42,7 +42,7 @@ Ensure you have [Docker](https://www.docker.com/) installed on your local machin
 git clone https://github.com/MateuszRuszczynski/FlyFlow-API.git
 cd flyflow_api
 
-# Prepare environment variables
+# Prepare environment variables, populate .env with the required data
 cp .env_sample .env
 ```
 ### 3️⃣ Build & Run
