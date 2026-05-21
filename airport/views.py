@@ -25,7 +25,7 @@ class FlightViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         queryset = (
-            models.Flight.objects.all()
+            models.Flight.objects
             .prefetch_related("crew", "tickets")
             .select_related("route__destination", "route__source", "airplane")
             .annotate(
@@ -75,7 +75,7 @@ class AirplaneViewSet(viewsets.ModelViewSet):
     permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
     def get_queryset(self):
-        return models.Airplane.objects.all().select_related("airplane_type")
+        return models.Airplane.objects.select_related("airplane_type")
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -116,7 +116,7 @@ class CityViewSet(
     permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
     def get_queryset(self):
-        return models.City.objects.all().select_related("country")
+        return models.City.objects.select_related("country")
 
 
 class AirportViewSet(viewsets.ModelViewSet):
@@ -124,7 +124,7 @@ class AirportViewSet(viewsets.ModelViewSet):
     permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
     def get_queryset(self):
-        return models.Airport.objects.all().select_related("city")
+        return models.Airport.objects.select_related("city")
 
 
 class RouteViewSet(viewsets.ModelViewSet):
@@ -138,7 +138,7 @@ class RouteViewSet(viewsets.ModelViewSet):
         return serializers.RouteSerializer
 
     def get_queryset(self):
-        return models.Route.objects.all().select_related("source", "destination")
+        return models.Route.objects.select_related("source", "destination")
 
 
 class CrewViewSet(viewsets.ModelViewSet):
