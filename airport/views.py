@@ -3,6 +3,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.db.models import F, Count
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from . import (
     models,
     serializers,
@@ -11,9 +12,16 @@ from . import (
 )
 
 
+@extend_schema_view(
+    list=extend_schema(summary="List all flights"),
+    create=extend_schema(summary="Create a flight"),
+    retrieve=extend_schema(summary="Get flight details"),
+    update=extend_schema(summary="Update a flight"),
+    partial_update=extend_schema(summary="Partially update a flight"),
+    destroy=extend_schema(summary="Delete a flight"),
+)
 class FlightViewSet(viewsets.ModelViewSet):
     permission_classes = [custom_permissions.IsAdminOrReadOnly]
-
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter,
@@ -24,7 +32,7 @@ class FlightViewSet(viewsets.ModelViewSet):
     ordering_fields = ["departure_time", "arrival_time"]
 
     def get_queryset(self):
-        queryset = (
+        return (
             models.Flight.objects
             .prefetch_related("crew", "tickets")
             .select_related("route__destination", "route__source", "airplane")
@@ -34,7 +42,6 @@ class FlightViewSet(viewsets.ModelViewSet):
                 )
             )
         )
-        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -44,6 +51,11 @@ class FlightViewSet(viewsets.ModelViewSet):
         return serializers.FlightSerializer
 
 
+@extend_schema_view(
+    list=extend_schema(summary="List user orders"),
+    create=extend_schema(summary="Place a new order"),
+    retrieve=extend_schema(summary="Get order details"),
+)
 class OrderViewSet(
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
@@ -65,12 +77,28 @@ class OrderViewSet(
         return serializers.OrderSerializer
 
 
+@extend_schema_view(
+    list=extend_schema(summary="List all airplane types"),
+    create=extend_schema(summary="Create an airplane type"),
+    retrieve=extend_schema(summary="Get airplane type details"),
+    update=extend_schema(summary="Update an airplane type"),
+    partial_update=extend_schema(summary="Partially update an airplane type"),
+    destroy=extend_schema(summary="Delete an airplane type"),
+)
 class AirplaneTypeViewSet(viewsets.ModelViewSet):
     queryset = models.AirplaneType.objects.all()
     serializer_class = serializers.AirplaneTypeSerializer
     permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
 
+@extend_schema_view(
+    list=extend_schema(summary="List all airplanes"),
+    create=extend_schema(summary="Add a new airplane"),
+    retrieve=extend_schema(summary="Get airplane details"),
+    update=extend_schema(summary="Update an airplane"),
+    partial_update=extend_schema(summary="Partially update an airplane"),
+    destroy=extend_schema(summary="Delete an airplane"),
+)
 class AirplaneViewSet(viewsets.ModelViewSet):
     permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
@@ -84,6 +112,7 @@ class AirplaneViewSet(viewsets.ModelViewSet):
             return serializers.AirplaneImageSerializer
         return serializers.AirplaneSerializer
 
+    @extend_schema(summary="Upload airplane image")
     @action(methods=["POST"], detail=True, url_path="upload-image")
     def upload_image(self, request, pk=None):
         airplane = self.get_object()
@@ -95,6 +124,11 @@ class AirplaneViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema_view(
+    list=extend_schema(summary="List all countries"),
+    create=extend_schema(summary="Add a new country"),
+    retrieve=extend_schema(summary="Get country details"),
+)
 class CountryViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
@@ -106,6 +140,11 @@ class CountryViewSet(
     permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
 
+@extend_schema_view(
+    list=extend_schema(summary="List all cities"),
+    create=extend_schema(summary="Add a new city"),
+    retrieve=extend_schema(summary="Get city details"),
+)
 class CityViewSet(
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
@@ -119,6 +158,14 @@ class CityViewSet(
         return models.City.objects.select_related("country")
 
 
+@extend_schema_view(
+    list=extend_schema(summary="List all airports"),
+    create=extend_schema(summary="Add a new airport"),
+    retrieve=extend_schema(summary="Get airport details"),
+    update=extend_schema(summary="Update an airport"),
+    partial_update=extend_schema(summary="Partially update an airport"),
+    destroy=extend_schema(summary="Delete an airport"),
+)
 class AirportViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.AirportSerializer
     permission_classes = [custom_permissions.IsAdminOrReadOnly]
@@ -127,6 +174,14 @@ class AirportViewSet(viewsets.ModelViewSet):
         return models.Airport.objects.select_related("city")
 
 
+@extend_schema_view(
+    list=extend_schema(summary="List all routes"),
+    create=extend_schema(summary="Create a route"),
+    retrieve=extend_schema(summary="Get route details"),
+    update=extend_schema(summary="Update a route"),
+    partial_update=extend_schema(summary="Partially update a route"),
+    destroy=extend_schema(summary="Delete a route"),
+)
 class RouteViewSet(viewsets.ModelViewSet):
     permission_classes = [custom_permissions.IsAdminOrReadOnly]
 
@@ -141,6 +196,14 @@ class RouteViewSet(viewsets.ModelViewSet):
         return models.Route.objects.select_related("source", "destination")
 
 
+@extend_schema_view(
+    list=extend_schema(summary="List all crew members"),
+    create=extend_schema(summary="Add a crew member"),
+    retrieve=extend_schema(summary="Get crew member details"),
+    update=extend_schema(summary="Update a crew member"),
+    partial_update=extend_schema(summary="Partially update a crew member"),
+    destroy=extend_schema(summary="Remove a crew member"),
+)
 class CrewViewSet(viewsets.ModelViewSet):
     queryset = models.Crew.objects.all()
     serializer_class = serializers.CrewSerializer
